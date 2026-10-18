@@ -1,4 +1,4 @@
-import express from 'express';
+//import express from 'express';
 const path = require('path');
 const fs = require('fs');
 const { nanoid } = require('nanoid'); // Para hacer los id de sesion
