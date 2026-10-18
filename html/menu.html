@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="menu.css">
+    <title>Menu</title>
+</head>
+<body>
+    <div class="min-w-screen bg-gray-900 flex text-white justify-between py-4">
+        <div class="container flex my-2">
+            <a href="install" class="text-lg mx-5 font-semibold cursor-pointer">Install</a>
+        </div>
+        <div class="flex my-2">
+            <a href="https://protohumkthe.onrender.com" class="text-lg mx-5 w-20 items-end font-semibold cursor-pointer">Room 1</a>
+        </div>
+    </div>
+    <div id="grid" class="min-h-screen min-w-screen bg-gray-800 sm:grid sm:grid-cols-3 sm:gap-9 sm:place-items-center place-content-start p-7 pr-8"></div>
+    <div class="p-2 bg-gray-900 text-white  flex justify-center overflow-x-scroll">
+        <p>La informacion actualizada se encuentra en <a href="https://xvyqw7jlhat9mrztkxkuktwo9ct96pby9g7hv5sbp7dafojdnvs1vjro-dfeee8.gitlab.io/">https://xvyqw7jlhat9mrztkxkuktwo9ct96pby9g7hv5sbp7dafojdnvs1vjro-dfeee8.gitlab.io/</a></p>
+    </div>
+    <script>
+        let last_logs = null;
+        let logs = null;
+
+        async function updateCards() {
+            logs = await obtenerLogs();
+
+            if (JSON.stringify( logs ) != JSON.stringify( last_logs )) {
+                await setCards();
+
+                last_logs = structuredClone( logs );
+            }
+        }
+
+        async function setCards(){
+            let grid = document.getElementById('grid')
+
+            let gridTemp = document.getElementById('grid').cloneNode()
+            
+            let num_pc = 1;
+            for(let i = 0;i < logs.length; i++) {
+                if (logs[i].id_pc == '' || logs[i].id_pc == null) continue; // Por si el id pc esta vacio
+
+                let id_pc = logs[i].id_pc;
+                let state = logs[i].state == 'on' ? 'Encendido':'Apagado';
+                let last_message = new Date(logs[i].unix_time).toLocaleString();
+                let description = logs[i].description;
+                let led_status = logs[i].state == 'on' ? '<div class="mt-5 sm:w-10 sm:h-10 w-20 h-20 rounded-full bg-[radial-gradient(circle_at_30%_30%,_#2BD904,_#125902)] relative after:content-[\'\'] after:absolute after:top-[15%] after:left-[30%] after:w-[20%] after:h-[20%] after:bg-[rgba(255,255,255,0.3)] after:rounded-full"></div>':'<div class="mt-5 sm:w-10 sm:h-10 w-20 h-20 rounded-full bg-[radial-gradient(circle_at_30%_30%,_#555,_#222)] relative after:content-[\'\'] after:absolute after:top-[15%] after:left-[30%] after:w-[20%] after:h-[20%] after:bg-[rgba(255,255,255,0.3)] after:rounded-full"></div>'
+
+                let newCard = document.createElement('div')
+                newCard.className = "bg-blue-50 rounded-[20px] shadow-lg sm:p-4 p-3 w-full sm:w-[30vw] hover:border-b-[5px] hover:border-b-gray-600 hover:rounded-[20px] flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-start cursor-pointer h-auto sm:h-[19em] sm:my-0 my-5 transition-all duration-300";
+                newCard.innerHTML = `
+                    <div>
+                        <h2 class="text-lg font-mono sm:text-center font-extrabold sm:p-2 p-0">Computador ${num_pc++}</h2>
+                        <p class="sm:pl-0 pl-4 text-gray-600 text-sm text-left font-mono"><strong>Id de sesion:</strong> ${id_pc}</p>
+                        <p class="sm:pl-0 pl-4 text-gray-600 text-sm text-left font-mono"><strong>Estado:</strong> ${state}</p>
+                        <p class="sm:pl-0 pl-4 text-gray-600 text-sm text-left font-mono"><strong>Ultimo mensaje:</strong> ${last_message}</p>
+                        <p class="sm:pl-0 pl-4 text-gray-600 text-sm text-left font-mono"><strong>Descripcion del equipo:</strong> ${description}</p>
+                    </div>
+                    <div class="flex">
+                        ${led_status}
+                    </div>
+                `;
+                newCard.addEventListener('click', () => {
+                    location.href = window.location.href + id_pc + '/computer/'
+                })
+                gridTemp.appendChild(newCard);
+            }
+            const parentNode = grid.parentNode;
+
+            parentNode.replaceChild(gridTemp, grid)
+        }
+
+        async function obtenerLogs() {
+            return JSON.parse( await fetch(window.location.href + 'logs').then(res => res.text()).then(text => text) );
+        }
+
+        setInterval(async() => {
+            updateCards();
+        }, 1000)
+    </script>
+</body>
+</html>

