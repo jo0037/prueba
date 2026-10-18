@@ -1,11 +1,20 @@
-//import express from 'express';
-const path = require('path');
-const fs = require('fs');
-const { nanoid } = require('nanoid'); // Para hacer los id de sesion
-const WebSocket = require('ws');
-const { createServer } = require('http');
-const cookieParser = require('cookie-parser');
-const { neon } = require("@neondatabase/serverless");
+// 1. Cargar las variables de entorno primero
+import 'dotenv/config';
+
+// 2. Importaciones de módulos nativos de Node.js
+import path from 'path';
+import fs from 'fs';
+import { createServer } from 'http';
+
+// 3. Importaciones de librerías externas (Módulos ESM)
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import WebSocket, { WebSocketServer } from 'ws'; // Ajustado para un uso correcto de ws
+import { nanoid } from 'nanoid';
+import { neon } from '@neondatabase/serverless';
+
+// ... El resto de tu código del servidor continúa abajo
+
 
 require('dotenv').config()
 
