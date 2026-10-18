@@ -16,10 +16,6 @@ import { neon } from '@neondatabase/serverless';
 // ... El resto de tu código del servidor continúa abajo
 
 
-require('dotenv').config()
-
-const { trafficdataRoute } = require('./routes/trafficdataRoute');
-
 const sql = neon(process.env.DATABASE_URL); // Neon database
 const app = express();
 const server = createServer(app);
