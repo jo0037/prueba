@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/login.css">
+</head>
+<body>
+    <div id="grid" class="min-h-screen min-w-screen bg-gray-800 flex items-center justify-center pr-8">
+        <form action="login" method="post" class="flex flex-col items-start">
+            <label for="password" class="text-white text-2xl font-mono">Ingrese la contraseña:</label>
+            <input class="w-[20vw] text-xl h-[5vh] py-2 mt-6 mb-2 bg-transparent outline-none selection:outline-none focus:border-b-2 focus:border-b-blue-900" placeholder="Contraseña" type="password" name="password" id="password" required>
+            <p id="info" class="text-red-800 text-1xl font-mono mb-3"></p>
+            <button id="submit" class="text-black text-2xl font-mono px-4 py-2 rounded-2xl bg-white hover:bg-gray-500">Ingresar</button>
+        </form>
+    </div>
+</body>
+<script>
+    (async() => {
+        let info = ""
+        await fetch(window.location.origin + '/info').then(res => res.text()).then(msg => info = msg)
+        let log_info = JSON.parse(info)
+        document.getElementById('info').innerText = log_info.info
+
+        if (log_info.info == 'Espere 60 segundos'){
+            document.getElementById('submit').className = 'text-2xl text-black font-mono px-4 py-2 bg-gray-500 rounded-2xl'
+            document.getElementById('submit').disabled = true
+        }else{
+            document.getElementById('submit').className = 'text-black text-2xl font-mono px-4 py-2 rounded-2xl bg-white hover:bg-gray-500'
+            document.getElementById('submit').disabled = false
+        }
+    })()
+</script>
+</html>
